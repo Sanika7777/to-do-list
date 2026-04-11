@@ -1,9 +1,10 @@
 @import "tailwindcss";
+
 body {
   @apply bg-slate-950 text-slate-50 antialiased;
 }
 
-/* Optional: smoother scrollbars for desktop */
+/* Scrollbar for task list */
 .custom-scroll::-webkit-scrollbar {
   width: 6px;
 }

@@ -7,7 +7,7 @@ const FILTERS = [
 function FilterBar({ active, counts, onChange }) {
   return (
     <div className="flex items-center justify-between mb-4">
-      <div className="inline-flex gap-2 rounded-full bg-slate-900/80 p-1 border border-slate-700">
+      <div className="inline-flex gap-2 rounded-full bg-slate-950/70 p-1 border border-slate-700/80 shadow-inner">
         {FILTERS.map(filter => {
           const isActive = active === filter.id
           return (
@@ -16,10 +16,11 @@ function FilterBar({ active, counts, onChange }) {
               type="button"
               onClick={() => onChange(filter.id)}
               className={[
-                "px-4 py-1.5 text-xs font-medium rounded-full transition",
+                "px-4 py-1.5 text-xs font-medium rounded-full transition-all duration-150",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400",
                 isActive
-                  ? "bg-slate-100 text-slate-900"
-                  : "text-slate-300 hover:bg-slate-800/80",
+                  ? "bg-slate-100 text-slate-900 shadow-sm"
+                  : "text-slate-300 hover:bg-slate-800/90 hover:text-slate-50",
               ].join(" ")}
             >
               {filter.label}

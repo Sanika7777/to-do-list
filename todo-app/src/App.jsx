@@ -20,12 +20,19 @@ function App() {
   const [tasks, setTasks] = useState([])
   const [filter, setFilter] = useState("all")
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState("")
 
   useEffect(() => {
     resetTaskState()
     fetchTasksFromApi()
-      .then((data) => setTasks(data))
-      .catch((err) => console.error(err.message))
+      .then((data) => {
+        setTasks(data)
+        setError("")
+      })
+      .catch((err) => {
+        console.error(err.message)
+        setError("Could not load tasks. Make sure the backend server is running.")
+      })
       .finally(() => setIsLoading(false))
   }, [])
 
@@ -33,8 +40,10 @@ function App() {
     try {
       const created = await createTaskApi(text)
       setTasks(prev => [...prev, created])
+      setError("")
     } catch (err) {
       console.error(err.message)
+      setError(err.message || "Failed to create task.")
     }
   }
 
@@ -42,8 +51,10 @@ function App() {
     try {
       await deleteTaskApi(id)
       setTasks(prev => prev.filter(t => t.id !== id))
+      setError("")
     } catch (err) {
       console.error(err.message)
+      setError(err.message || "Failed to delete task.")
     }
   }
 
@@ -53,8 +64,10 @@ function App() {
       setTasks(prev =>
         prev.map(t => (t.id === updated.id ? updated : t))
       )
+      setError("")
     } catch (err) {
       console.error(err.message)
+      setError(err.message || "Failed to complete task.")
     }
   }
 
@@ -64,8 +77,10 @@ function App() {
       setTasks(prev =>
         prev.map(t => (t.id === updated.id ? updated : t))
       )
+      setError("")
     } catch (err) {
       console.error(err.message)
+      setError(err.message || "Failed to update task.")
     }
   }
 
@@ -74,8 +89,10 @@ function App() {
       await clearAllApi()
       setTasks([])
       resetTaskState()
+      setError("")
     } catch (err) {
       console.error(err.message)
+      setError(err.message || "Failed to clear tasks.")
     }
   }
 
@@ -105,8 +122,7 @@ function App() {
               To-Do Control Center
             </h1>
             <p className="mt-1 text-sm text-slate-400 max-w-md">
-              Plan your day, track your progress, and keep pending items in one
-              clean board.
+              Plan your day, track your progress, and keep pending items in one clean board.
             </p>
           </div>
 
@@ -121,10 +137,22 @@ function App() {
           </div>
         </div>
 
-        {/* main board fills much more space */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6 lg:gap-8 items-stretch">
           <main className="relative bg-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-7 shadow-2xl backdrop-blur-lg transition-transform transition-colors duration-300 hover:border-slate-600 hover:bg-slate-900/90 hover:-translate-y-1">
             <div className="absolute inset-x-10 -top-10 h-20 bg-gradient-to-b from-indigo-500/25 via-transparent to-transparent blur-3xl pointer-events-none" />
+
+            {error && (
+              <div className="mb-4 rounded-xl border border-red-500/50 bg-red-500/10 text-xs text-red-200 px-3 py-2 flex items-center justify-between">
+                <span>{error}</span>
+                <button
+                  type="button"
+                  className="text-[11px] underline-offset-2 hover:underline"
+                  onClick={() => setError("")}
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
 
             <TaskInput onAdd={handleAdd} />
 
@@ -160,7 +188,6 @@ function App() {
             />
           </main>
 
-          {/* side panel for stats / preview */}
           <aside className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-xl backdrop-blur-lg flex flex-col justify-between">
             <div>
               <h2 className="text-sm font-medium text-slate-100">
@@ -201,8 +228,7 @@ function App() {
 
             <div className="mt-6 pt-4 border-t border-slate-800 text-[11px] text-slate-500">
               Pro tip: Keep your pending tasks under{" "}
-              <span className="text-emerald-300 font-medium">5</span> for a
-              lighter day.
+              <span className="text-emerald-300 font-medium">5</span> for a lighter day.
             </div>
           </aside>
         </div>
