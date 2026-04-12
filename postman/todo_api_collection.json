@@ -1,0 +1,409 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "To-Do List API Collection",
+    "description": "Postman API tests for the Flask To-Do List backend.\n\nCovers all 6 REST endpoints with 9 test cases including success and error scenarios.\n\nPrepared by: Sanika Deshmukh\nProject: Diploma Capstone — To-Do List Web App\nBackend: http://127.0.0.1:5000",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:5000",
+      "type": "string",
+      "description": "Flask backend base URL"
+    },
+    {
+      "key": "task_id",
+      "value": "",
+      "type": "string",
+      "description": "Dynamically set after POST /tasks succeeds"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. GET /tasks — Get all tasks",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/tasks",
+          "host": ["{{base_url}}"],
+          "path": ["tasks"]
+        },
+        "description": "Retrieve all tasks from the backend. Should return 200 and a JSON array (empty or with existing tasks)."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is a JSON array', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.be.an('array');",
+              "});",
+              "",
+              "pm.test('Response time is under 500ms', function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. POST /tasks — Create a valid task",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Test task from Postman\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/tasks",
+          "host": ["{{base_url}}"],
+          "path": ["tasks"]
+        },
+        "description": "Create a new task with valid text. Should return 201 and the created task object. The task_id is saved to a collection variable for subsequent tests."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Response has required fields', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property('id');",
+              "    pm.expect(body).to.have.property('text');",
+              "    pm.expect(body).to.have.property('status');",
+              "    pm.expect(body).to.have.property('created_at');",
+              "});",
+              "",
+              "pm.test('Task text matches request', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.text).to.eql('Test task from Postman');",
+              "});",
+              "",
+              "pm.test('Task status is pending', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.status).to.eql('pending');",
+              "});",
+              "",
+              "pm.test('Task id is a number', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.id).to.be.a('number');",
+              "});",
+              "",
+              "// Save task_id for later requests",
+              "const body = pm.response.json();",
+              "if (body.id) {",
+              "    pm.collectionVariables.set('task_id', body.id);",
+              "    console.log('Saved task_id:', body.id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. POST /tasks — Empty text (validation error)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/tasks",
+          "host": ["{{base_url}}"],
+          "path": ["tasks"]
+        },
+        "description": "Attempt to create a task with empty text. Should return 400 with an error message."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('Response has error field', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property('error');",
+              "});",
+              "",
+              "pm.test('Error message is correct', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.error).to.eql('Task text cannot be empty');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. PUT /tasks/{{task_id}} — Update task text",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Updated task text from Postman\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/tasks/{{task_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["tasks", "{{task_id}}"]
+        },
+        "description": "Update the text of an existing task using the task_id saved in step 2. Should return 200 and the updated task."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Updated text matches request', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.text).to.eql('Updated task text from Postman');",
+              "});",
+              "",
+              "pm.test('Response has all required fields', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property('id');",
+              "    pm.expect(body).to.have.property('text');",
+              "    pm.expect(body).to.have.property('status');",
+              "    pm.expect(body).to.have.property('created_at');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. PUT /tasks/99999 — Update non-existent task (404)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"This task does not exist\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/tasks/99999",
+          "host": ["{{base_url}}"],
+          "path": ["tasks", "99999"]
+        },
+        "description": "Attempt to update a task with an ID that does not exist. Should return 404 with an error message."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test('Response has error field', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property('error');",
+              "});",
+              "",
+              "pm.test('Error message is correct', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.error).to.eql('Task not found');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. POST /tasks/{{task_id}}/complete — Mark task as completed",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/tasks/{{task_id}}/complete",
+          "host": ["{{base_url}}"],
+          "path": ["tasks", "{{task_id}}", "complete"]
+        },
+        "description": "Mark the task (created in step 2) as completed. Should return 200 and the updated task with status='completed'."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Task status is completed', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.status).to.eql('completed');",
+              "});",
+              "",
+              "pm.test('Response has all required fields', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property('id');",
+              "    pm.expect(body).to.have.property('text');",
+              "    pm.expect(body).to.have.property('status');",
+              "    pm.expect(body).to.have.property('created_at');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. POST /tasks/{{task_id}}/complete — Already completed (400)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/tasks/{{task_id}}/complete",
+          "host": ["{{base_url}}"],
+          "path": ["tasks", "{{task_id}}", "complete"]
+        },
+        "description": "Attempt to mark an already-completed task as completed again. Should return 400 with error 'Task already completed'."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('Response has error field', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property('error');",
+              "});",
+              "",
+              "pm.test('Error message is correct', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.error).to.eql('Task already completed');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. DELETE /tasks/{{task_id}} — Delete specific task",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/tasks/{{task_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["tasks", "{{task_id}}"]
+        },
+        "description": "Delete the task created in step 2 by its ID. Should return 200 with a confirmation message."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has message field', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property('message');",
+              "});",
+              "",
+              "pm.test('Deletion message is correct', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.message).to.eql('Task deleted');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. DELETE /tasks — Clear all tasks",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/tasks",
+          "host": ["{{base_url}}"],
+          "path": ["tasks"]
+        },
+        "description": "Clear the entire task list. Should return 200 with a confirmation message. After this, GET /tasks returns an empty array."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has message field', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property('message');",
+              "});",
+              "",
+              "pm.test('Clear all message is correct', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.message).to.eql('All tasks cleared');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

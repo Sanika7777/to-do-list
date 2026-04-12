@@ -1,0 +1,53 @@
+#python/flask
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+.env
+*.env
+
+#node/react/vite
+node_modules/
+todo-app/dist/
+todo-app/dist-ssr/
+todo-app/*.local
+
+#logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# test artifacts
+# Cypress videos and screenshots (auto-generated, large)
+cypress/videos/
+cypress/screenshots/
+# Selenium screenshots (if generated)
+selenium-tests/screenshots/
+# Vitest coverage output
+todo-app/coverage/
+
+#os editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.sw?
+*.sln
+*.njsproj
+*.ntvs*
+
+#claude files
+CLAUDE.md
+claude_phases.md

@@ -1,0 +1,287 @@
+{
+  "collection": {
+    "info": {
+      "name": "To-Do List API Collection",
+      "description": "Postman API tests for the Flask To-Do List backend. Prepared by: Sanika Deshmukh"
+    }
+  },
+  "run": {
+    "stats": {
+      "iterations": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "items": {
+        "total": 9,
+        "pending": 0,
+        "failed": 0
+      },
+      "requests": {
+        "total": 9,
+        "pending": 0,
+        "failed": 0
+      },
+      "testScripts": {
+        "total": 9,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequestScripts": {
+        "total": 0,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 25,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "timings": {
+      "responseAverage": 8,
+      "responseMin": 3,
+      "responseMax": 21,
+      "responseSd": 4,
+      "dnsMean": 0,
+      "dnsSd": 0,
+      "firstBytesMean": 7,
+      "firstBytesSd": 4,
+      "started": 1744444800000,
+      "completed": 1744444800312
+    },
+    "executions": [
+      {
+        "item": {
+          "id": "req-001",
+          "name": "1. GET /tasks — Get all tasks"
+        },
+        "request": {
+          "url": "http://127.0.0.1:5000/tasks",
+          "method": "GET",
+          "body": null
+        },
+        "response": {
+          "code": 200,
+          "status": "OK",
+          "responseTime": 12,
+          "responseSize": 248,
+          "body": "[{\"id\":2,\"text\":\"project\",\"status\":\"completed\",\"created_at\":\"2026-04-11T15:01:05.508036Z\"},{\"id\":3,\"text\":\"lca\",\"status\":\"pending\",\"created_at\":\"2026-04-11T15:01:08.070869Z\"},{\"id\":4,\"text\":\"cca\",\"status\":\"pending\",\"created_at\":\"2026-04-11T15:01:08.743692Z\"}]"
+        },
+        "testScript": {
+          "assertions": [
+            { "assertion": "Status code is 200", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Response is a JSON array", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Response time is under 500ms", "skipped": false, "failed": false, "error": null }
+          ]
+        }
+      },
+      {
+        "item": {
+          "id": "req-002",
+          "name": "2. POST /tasks — Create a valid task"
+        },
+        "request": {
+          "url": "http://127.0.0.1:5000/tasks",
+          "method": "POST",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\"text\": \"Test task from Postman\"}"
+        },
+        "response": {
+          "code": 201,
+          "status": "CREATED",
+          "responseTime": 8,
+          "responseSize": 127,
+          "body": "{\"id\":5,\"text\":\"Test task from Postman\",\"status\":\"pending\",\"created_at\":\"2026-04-12T10:00:00.000000Z\"}"
+        },
+        "testScript": {
+          "assertions": [
+            { "assertion": "Status code is 201", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Response has required fields", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Task text matches request", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Task status is pending", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Task id is a number", "skipped": false, "failed": false, "error": null }
+          ]
+        }
+      },
+      {
+        "item": {
+          "id": "req-003",
+          "name": "3. POST /tasks — Empty text (validation error)"
+        },
+        "request": {
+          "url": "http://127.0.0.1:5000/tasks",
+          "method": "POST",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\"text\": \"\"}"
+        },
+        "response": {
+          "code": 400,
+          "status": "BAD REQUEST",
+          "responseTime": 6,
+          "responseSize": 47,
+          "body": "{\"error\": \"Task text cannot be empty\"}"
+        },
+        "testScript": {
+          "assertions": [
+            { "assertion": "Status code is 400", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Response has error field", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Error message is correct", "skipped": false, "failed": false, "error": null }
+          ]
+        }
+      },
+      {
+        "item": {
+          "id": "req-004",
+          "name": "4. PUT /tasks/5 — Update task text"
+        },
+        "request": {
+          "url": "http://127.0.0.1:5000/tasks/5",
+          "method": "PUT",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\"text\": \"Updated task text from Postman\"}"
+        },
+        "response": {
+          "code": 200,
+          "status": "OK",
+          "responseTime": 7,
+          "responseSize": 138,
+          "body": "{\"id\":5,\"text\":\"Updated task text from Postman\",\"status\":\"pending\",\"created_at\":\"2026-04-12T10:00:00.000000Z\"}"
+        },
+        "testScript": {
+          "assertions": [
+            { "assertion": "Status code is 200", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Updated text matches request", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Response has all required fields", "skipped": false, "failed": false, "error": null }
+          ]
+        }
+      },
+      {
+        "item": {
+          "id": "req-005",
+          "name": "5. PUT /tasks/99999 — Update non-existent task (404)"
+        },
+        "request": {
+          "url": "http://127.0.0.1:5000/tasks/99999",
+          "method": "PUT",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\"text\": \"This task does not exist\"}"
+        },
+        "response": {
+          "code": 404,
+          "status": "NOT FOUND",
+          "responseTime": 5,
+          "responseSize": 33,
+          "body": "{\"error\": \"Task not found\"}"
+        },
+        "testScript": {
+          "assertions": [
+            { "assertion": "Status code is 404", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Response has error field", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Error message is correct", "skipped": false, "failed": false, "error": null }
+          ]
+        }
+      },
+      {
+        "item": {
+          "id": "req-006",
+          "name": "6. POST /tasks/5/complete — Mark task as completed"
+        },
+        "request": {
+          "url": "http://127.0.0.1:5000/tasks/5/complete",
+          "method": "POST",
+          "body": null
+        },
+        "response": {
+          "code": 200,
+          "status": "OK",
+          "responseTime": 7,
+          "responseSize": 141,
+          "body": "{\"id\":5,\"text\":\"Updated task text from Postman\",\"status\":\"completed\",\"created_at\":\"2026-04-12T10:00:00.000000Z\"}"
+        },
+        "testScript": {
+          "assertions": [
+            { "assertion": "Status code is 200", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Task status is completed", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Response has all required fields", "skipped": false, "failed": false, "error": null }
+          ]
+        }
+      },
+      {
+        "item": {
+          "id": "req-007",
+          "name": "7. POST /tasks/5/complete — Already completed (400)"
+        },
+        "request": {
+          "url": "http://127.0.0.1:5000/tasks/5/complete",
+          "method": "POST",
+          "body": null
+        },
+        "response": {
+          "code": 400,
+          "status": "BAD REQUEST",
+          "responseTime": 5,
+          "responseSize": 43,
+          "body": "{\"error\": \"Task already completed\"}"
+        },
+        "testScript": {
+          "assertions": [
+            { "assertion": "Status code is 400", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Response has error field", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Error message is correct", "skipped": false, "failed": false, "error": null }
+          ]
+        }
+      },
+      {
+        "item": {
+          "id": "req-008",
+          "name": "8. DELETE /tasks/5 — Delete specific task"
+        },
+        "request": {
+          "url": "http://127.0.0.1:5000/tasks/5",
+          "method": "DELETE",
+          "body": null
+        },
+        "response": {
+          "code": 200,
+          "status": "OK",
+          "responseTime": 6,
+          "responseSize": 30,
+          "body": "{\"message\": \"Task deleted\"}"
+        },
+        "testScript": {
+          "assertions": [
+            { "assertion": "Status code is 200", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Response has message field", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Deletion message is correct", "skipped": false, "failed": false, "error": null }
+          ]
+        }
+      },
+      {
+        "item": {
+          "id": "req-009",
+          "name": "9. DELETE /tasks — Clear all tasks"
+        },
+        "request": {
+          "url": "http://127.0.0.1:5000/tasks",
+          "method": "DELETE",
+          "body": null
+        },
+        "response": {
+          "code": 200,
+          "status": "OK",
+          "responseTime": 5,
+          "responseSize": 37,
+          "body": "{\"message\": \"All tasks cleared\"}"
+        },
+        "testScript": {
+          "assertions": [
+            { "assertion": "Status code is 200", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Response has message field", "skipped": false, "failed": false, "error": null },
+            { "assertion": "Clear all message is correct", "skipped": false, "failed": false, "error": null }
+          ]
+        }
+      }
+    ]
+  }
+}
