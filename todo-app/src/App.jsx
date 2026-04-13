@@ -50,7 +50,10 @@ function App() {
   const handleDelete = async (id) => {
     try {
       await deleteTaskApi(id)
-      setTasks(prev => prev.filter(t => t.id !== id))
+
+      const updatedTasks = await fetchTasksFromApi()
+      setTasks(updatedTasks)
+
       setError("")
     } catch (err) {
       console.error(err.message)
@@ -60,10 +63,11 @@ function App() {
 
   const handleComplete = async (id) => {
     try {
-      const updated = await completeTaskApi(id)
-      setTasks(prev =>
-        prev.map(t => (t.id === updated.id ? updated : t))
-      )
+      await completeTaskApi(id)
+
+      const updatedTasks = await fetchTasksFromApi()
+      setTasks(updatedTasks)
+
       setError("")
     } catch (err) {
       console.error(err.message)
@@ -73,10 +77,11 @@ function App() {
 
   const handleEdit = async (id, newText) => {
     try {
-      const updated = await updateTaskApi(id, newText)
-      setTasks(prev =>
-        prev.map(t => (t.id === updated.id ? updated : t))
-      )
+      await updateTaskApi(id, newText)
+
+      const updatedTasks = await fetchTasksFromApi()
+      setTasks(updatedTasks)
+
       setError("")
     } catch (err) {
       console.error(err.message)
