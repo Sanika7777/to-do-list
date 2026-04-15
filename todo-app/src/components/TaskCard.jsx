@@ -84,11 +84,12 @@ function TaskCard({ task, onComplete, onDelete, onEdit }) {
         </button>
         <button
           type="button"
+          data-testid={`delete-${task.id}`}
           onClick={() => onDelete(task.id)}
           className="text-xs px-2 py-1 rounded-lg border border-red-500/60 text-red-300 hover:bg-red-500/15 hover:border-red-400 transition-colors duration-150"
         >
           Delete
-        </button>
+      </button>
       </div>
     </div>
   )

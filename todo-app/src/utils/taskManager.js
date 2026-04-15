@@ -2,13 +2,18 @@ const API_BASE = "http://127.0.0.1:5000"
 
 // -------- API HELPERS --------
 
-export async function fetchTasksFromApi() {
-  const res = await fetch(`${API_BASE}/tasks`)
+export const fetchTasksFromApi = async () => {
+  const res = await fetch("http://127.0.0.1:5000/tasks");
+
   if (!res.ok) {
-    throw new Error("Failed to load tasks")
+    throw new Error("Failed to fetch tasks");
   }
-  return await res.json()
-}
+
+  const data = await res.json();
+
+  // ✅ ensure clean return
+  return Array.isArray(data) ? data : [];
+};
 
 export async function createTaskApi(text) {
   const res = await fetch(`${API_BASE}/tasks`, {
